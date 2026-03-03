@@ -2,7 +2,9 @@ cmake_minimum_required(VERSION 2.8...3.5)
 
 project(assignment1)
 
-add_executable(Alien.out Alien.cpp)
+add_executable(Alien.out 
+    Alien.cpp
+    Model.cpp)
 
 set(OpenGL_GL_PREFERENCE LEGACY)
 find_package(OpenGL REQUIRED)
