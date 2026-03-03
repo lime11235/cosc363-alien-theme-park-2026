@@ -1,2 +1,8 @@
 build/
 build/*
+CMakeCache.txt
+Makefile
+cmake_install.cmake
+Alien.out
+CMakeFiles/
+CMakeFiles/*
