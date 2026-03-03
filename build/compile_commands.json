@@ -1,8 +1,0 @@
-[
-{
-  "directory": "/csse/users/lll37/Documents/Cosc363/assignment1/build",
-  "command": "/usr/bin/g++ -g -o CMakeFiles/Alien.out.dir/Alien.cpp.o -c /csse/users/lll37/Documents/Cosc363/assignment1/Alien.cpp",
-  "file": "/csse/users/lll37/Documents/Cosc363/assignment1/Alien.cpp",
-  "output": "CMakeFiles/Alien.out.dir/Alien.cpp.o"
-}
-]
