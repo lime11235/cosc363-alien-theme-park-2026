@@ -4,7 +4,9 @@ project(assignment1)
 
 add_executable(Alien.out 
     Alien.cpp
-    Model.cpp)
+    Model.cpp
+    Animation.cpp
+)
 
 set(OpenGL_GL_PREFERENCE LEGACY)
 find_package(OpenGL REQUIRED)

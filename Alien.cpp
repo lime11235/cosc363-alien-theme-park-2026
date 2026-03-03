@@ -1,12 +1,11 @@
 
 #include <GL/freeglut_std.h>
 #include <GL/gl.h>
-#include <iostream>
-#include <fstream>
 #include <climits>
 #include <GL/freeglut.h>
 #include <math.h>
 #include "Model.h"
+#include "Animation.h"
 
 using namespace std;
 
@@ -15,6 +14,8 @@ const int FPS = 30;
 bool skeystates[256] = {false};
 float angle = 0;
 float height = 5.0;
+float walk = -10;
+float pinch = 0;
 
 void drawFloor() {
 	glColor3f(0., 0.5, 0.);
@@ -41,7 +42,7 @@ void display() {
 	glLightfv(GL_LIGHT0,GL_POSITION, lpos);
 
 	drawFloor();
-    drawAlien(0, 0, 0);
+    drawAlien(walk, pinch, 0);
 
     glFlush();
 }
@@ -58,6 +59,22 @@ void initialize(void) {
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
 	gluPerspective(20., 1., 10., 1000.);
+
+    register_animation((animation_infinite) {
+        .value = &walk,
+        .increment = 0.5,
+        .to = 15.0,
+        .from = -15.0,
+        .type = ALTERNATE
+    });
+
+    register_animation((animation_infinite) {
+        .value = &pinch,
+        .increment = 0.6,
+        .to = 20.0,
+        .from = -5.0,
+        .type = ALTERNATE
+    });
 }
 
 void timer(int value) {
@@ -70,6 +87,7 @@ void timer(int value) {
     } else if (skeystates[GLUT_KEY_DOWN]) {
         height -= 0.4;
     }
+    animate();
     glutPostRedisplay();
     glutTimerFunc(1000/FPS, timer, 0);
 }
