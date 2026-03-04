@@ -6,6 +6,7 @@ add_executable(Alien.out
     Alien.cpp
     Model.cpp
     Animation.cpp
+    Utils.cpp
 )
 
 set(OpenGL_GL_PREFERENCE LEGACY)

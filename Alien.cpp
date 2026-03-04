@@ -6,6 +6,7 @@
 #include <math.h>
 #include "Model.h"
 #include "Animation.h"
+#include "Utils.h"
 
 using namespace std;
 
@@ -37,16 +38,22 @@ void sidewalk() {
 }
 
 void drawFloor() {
-	glColor3f(0., 0.5, 0.);
+    bool flag = false;
 
-	for(int i = -50; i <= 50; i++)  {
-		glBegin(GL_LINES);
-			glVertex3f(-50., 0, i);
-			glVertex3f( 50., 0, i);
-			glVertex3f(i, 0, -50.);
-			glVertex3f(i, 0,  50.);
-		glEnd();
+	glBegin(GL_QUADS);
+	glNormal3f(0, 1, 0);
+	for (int x = -50; x <= 50; x++) {
+		for (int z = -50; z <= 50; z++) {
+			if (flag) glColor3f(0.6, 1.0, 0.8);
+			else 	  glColor3f(0.8, 1.0, 0.6);
+			glVertex3f(x, -0.001, z);
+			glVertex3f(x, -0.001, z+1);
+			glVertex3f(x+1, -0.001, z+1);
+			glVertex3f(x+1, -0.001, z);
+			flag = !flag;
+		}
 	}
+	glEnd();
 }
 
 void display() {
@@ -58,11 +65,29 @@ void display() {
 
 	gluLookAt(pos.x, 1.5, pos.z, pos.x + sin(M_PI*dir/180), 1.2, pos.z + cos(M_PI*dir/180), 0., 1., 0.);
 
+    glEnable(GL_LIGHTING);
 	glLightfv(GL_LIGHT0,GL_POSITION, lpos);
+    // float red[4] = {0, 1, 0, 1};
+    // glLightfv(GL_LIGHT0, GL_DIFFUSE, red);
+    // glLightfv(GL_LIGHT0, GL_SPECULAR, red);
 
 	drawFloor();
-    glTranslatef(waddle, 0, 0);
-    drawAlien(walk, pinch, 45);
+
+    glPushMatrix();
+        glTranslatef(waddle, 0.5, 0);
+        drawAlien(walk, pinch, 45, true);
+    glPopMatrix();
+
+    float shadowMat[16]; 
+    getShadowMat(shadowMat, lpos);
+
+    glDisable(GL_LIGHTING);
+    glPushMatrix();
+        glMultMatrixf(shadowMat);
+        glTranslatef(waddle, 0.5, 0);
+        glColor4f(0.2, 0.2, 0.2, 1.0);
+        drawAlien(walk, pinch, 45, false);
+    glPopMatrix();
 
     glFlush();
 }

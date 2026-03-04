@@ -6,3 +6,5 @@ cmake_install.cmake
 Alien.out
 CMakeFiles/
 CMakeFiles/*
+.cache/
+.cache/*
