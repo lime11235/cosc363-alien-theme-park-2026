@@ -13,35 +13,35 @@ static void drawLeg(float angle) {
     glPushMatrix();
     GLUquadric *q = gluNewQuadric();
     glRotatef(angle + 15.0, 1, 0, 0);
-    gluCylinder(q, 0.18, 0.14, 0.6, 36, 1);
+    gluCylinder(q, 0.18, 0.14, 0.6, 12, 1);
     gluQuadricDrawStyle(q, GLU_FILL);
     glTranslatef(0, 0, 0.55);
-    glutSolidSphere(0.14, 36, 12);
+    glutSolidSphere(0.14, 12, 4);
     glRotatef(angle + 80.0, 1, 0, 0);
-    glutSolidCone(0.16, 0.6, 36, 1);
+    glutSolidCone(0.16, 0.6, 12, 1);
     glPopMatrix();
 }
 
 void drawClaws(void) {
     glPushMatrix();
     GLUquadric *q = gluNewQuadric();
-    gluCylinder(q, 0.18, 0.14, 0.6, 36, 1);
+    gluCylinder(q, 0.18, 0.14, 0.6, 12, 1);
     gluQuadricDrawStyle(q, GLU_FILL);
     glTranslatef(0, 0, 0.55);
-    glutSolidSphere(0.14, 36, 12);
+    glutSolidSphere(0.14, 12, 4);
     glRotatef(90, 0, 1, 0);
-    glutSolidCone(0.14, 0.7, 36, 1);
+    glutSolidCone(0.14, 0.7, 12, 1);
     glRotatef(-45, 0, 1, 0);
     glScalef(1.6, 1, 1);
     glRotatef(10, 0, 1, 0);
     glScalef(1.2, 1, 1);
     glRotatef(-10, 0, 1, 0);
-    gluCylinder(q, 0.1, 0.15, 0.6, 36, 1);
+    gluCylinder(q, 0.1, 0.15, 0.6, 12, 1);
     glTranslatef(0, 0, 0.6);
-    glutSolidSphere(0.15, 36, 12);
+    glutSolidSphere(0.15, 12, 4);
     glRotatef(30, 0, 1, 0);
     glTranslatef(0, 0, 0.04);
-    glutSolidCone(0.15, 0.27, 36, 1);
+    glutSolidCone(0.15, 0.27, 12, 1);
     glPopMatrix();
 }
 
@@ -52,7 +52,7 @@ void drawAlien(float leg_angle, float claw_pinch, float claw_raise) {
     glPushMatrix();
     glTranslatef(0, 0.3, 0);
     glScalef(1.0, 0.6, 1.0);
-    glutSolidSphere(1.0, 36, 12);
+    glutSolidSphere(1.0, 24, 8);
     glPopMatrix();
 
     glPushMatrix();
@@ -80,7 +80,7 @@ void drawAlien(float leg_angle, float claw_pinch, float claw_raise) {
     glPopMatrix();
 
     glPushMatrix();
-    glTranslatef(0.8*sin(cangle*M_PI/180), 0.8*0.6*sin(claw_raise) + 0.18, 0.8*cos(cangle*M_PI/180));
+    glTranslatef(0.8*sin(cangle*M_PI/180), 0.8*0.6*sin(claw_raise*M_PI/180) + 0.18, 0.8*cos(cangle*M_PI/180));
     glRotatef(-claw_raise, 1, 0, 0);
     glRotatef(cangle-claw_pinch, 0, 1, 0);
     glScalef(-1, 1, 1);
@@ -88,7 +88,7 @@ void drawAlien(float leg_angle, float claw_pinch, float claw_raise) {
     glPopMatrix();
 
     glPushMatrix();
-    glTranslatef(0.8*sin(-cangle*M_PI/180), 0.8*0.6*sin(claw_raise) + 0.18, 0.8*cos(-cangle*M_PI/180));
+    glTranslatef(0.8*sin(-cangle*M_PI/180), 0.8*0.6*sin(claw_raise*M_PI/180) + 0.18, 0.8*cos(-cangle*M_PI/180));
     glRotatef(-claw_raise, 1, 0, 0);
     glRotatef(-cangle+claw_pinch, 0, 1, 0);
     drawClaws();

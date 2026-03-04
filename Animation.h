@@ -1,14 +1,20 @@
 #ifndef ANIMATION_H
 #define ANIMATION_H
 
-typedef struct {
+struct animation {
     int start_ts;
     int end_ts;
     float (*animation_curve)(float t);
     float from;
     float to;
     float *value;
-} animation;
+    void (*callback)(void);
+    bool operator<(const animation& other) const {
+        return start_ts < other.start_ts;
+    }
+};
+
+typedef struct animation animation;
 
 typedef enum {
     RESTART,
@@ -23,8 +29,13 @@ typedef struct {
     animation_type type;
 } animation_infinite;
 
-void register_animation(animation_infinite animation);
+void registerStaticAnimation(animation_infinite animation);
+void registerDynamicAnimation(animation animation);
 
-void animate(void);
+void animate(int value);
+
+float easeOutElastic(float t);
+float easeInOutQuart(float t);
+float easeOutBounce(float t);
 
 #endif // !ANIMATION_H
