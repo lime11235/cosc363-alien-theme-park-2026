@@ -14,13 +14,27 @@ const int FPS = 30;
 
 int frame = 0;
 bool skeystates[256] = {false};
-float dir = 180;
-struct {
-    float x = 0;
-    float z = 10;
-} pos;
-float walk = -10;
-float pinch = 0;
+
+position pos = {
+    .dir = 270,
+    .x = 20,
+    .y = 15,
+    .z = 0,
+};
+
+alienState alienGlobal {
+    .pinch = 0,
+    .walk = -10,
+    .raise = 0,
+};
+
+pendulumState pendulum {
+    .angle = 40,
+    .subangle = 0,
+    .velocity = 0.0625,
+    .gravity = 0
+};
+
 float waddle = -5;
 
 void sidewalk() {
@@ -57,13 +71,13 @@ void drawFloor() {
 }
 
 void display() {
-	float lpos[4] = {0., 10., 10., 1.0};  //light's position
+	float lpos[4] = {5., 50., 0., 1.0};  //light's position
     glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); 
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
 
-	gluLookAt(pos.x, 1.5, pos.z, pos.x + sin(M_PI*dir/180), 1.2, pos.z + cos(M_PI*dir/180), 0., 1., 0.);
+	gluLookAt(pos.x, pos.y, pos.z, pos.x + sin(M_PI*pos.dir/180), pos.y, pos.z + cos(M_PI*pos.dir/180), 0., 1., 0.);
 
     glEnable(GL_LIGHTING);
 	glLightfv(GL_LIGHT0,GL_POSITION, lpos);
@@ -73,9 +87,14 @@ void display() {
 
 	drawFloor();
 
+    // glPushMatrix();
+    //     glTranslatef(waddle, 0.5, 0);
+    //     drawAlien(alienGlobal, true);
+    // glPopMatrix();
+
     glPushMatrix();
-        glTranslatef(waddle, 0.5, 0);
-        drawAlien(walk, pinch, 45, true);
+        // glTranslatef(0, 0, -10);
+        drawPendulumRide(pendulum, alienGlobal, true);
     glPopMatrix();
 
     float shadowMat[16]; 
@@ -84,9 +103,10 @@ void display() {
     glDisable(GL_LIGHTING);
     glPushMatrix();
         glMultMatrixf(shadowMat);
-        glTranslatef(waddle, 0.5, 0);
+        // glTranslatef(waddle, 0.5, 0);
         glColor4f(0.2, 0.2, 0.2, 1.0);
-        drawAlien(walk, pinch, 45, false);
+        drawPendulumRide(pendulum, alienGlobal, false);
+        // drawAlien(alienGlobal, false);
     glPopMatrix();
 
     glFlush();
@@ -106,7 +126,7 @@ void initialize(void) {
 	gluPerspective(50., 1., 1., 1000.);
 
     registerStaticAnimation((animation_infinite) {
-        .value = &walk,
+        .value = &(alienGlobal.walk),
         .increment = 2.0,
         .to = 15.0,
         .from = -15.0,
@@ -114,11 +134,27 @@ void initialize(void) {
     });
 
     registerStaticAnimation((animation_infinite) {
-        .value = &pinch,
+        .value = &(alienGlobal.pinch),
         .increment = 0.6,
         .to = 20.0,
         .from = -5.0,
         .type = ALTERNATE
+    });
+
+    registerStaticAnimation((animation_infinite) {
+        .value = &(pendulum.gravity),
+        .increment = 0.05,
+        .to = 10,
+        .from = 0,
+        .type = ALTERNATE
+    });
+
+    registerStaticAnimation((animation_infinite) {
+        .value = &(pendulum.subangle),
+        .increment = 7,
+        .to = 360,
+        .from = 0,
+        .type = RESTART
     });
 
     sidewalk();
@@ -128,17 +164,18 @@ void timer(int value) {
     frame = value;
     value++;
     if (skeystates[GLUT_KEY_LEFT]) {
-        dir += 5;
+        pos.dir += 5;
     } else if (skeystates[GLUT_KEY_RIGHT]) {
-        dir -= 5;
+        pos.dir -= 5;
     } else if (skeystates[GLUT_KEY_UP]) {
-        pos.x += 0.5*sin(M_PI*dir/180);
-        pos.z += 0.5*cos(M_PI*dir/180);
+        pos.x += 0.5*sin(M_PI*pos.dir/180);
+        pos.z += 0.5*cos(M_PI*pos.dir/180);
     } else if (skeystates[GLUT_KEY_DOWN]) {
-        pos.x -= 0.5*sin(M_PI*dir/180);
-        pos.z -= 0.5*cos(M_PI*dir/180);
+        pos.x -= 0.5*sin(M_PI*pos.dir/180);
+        pos.z -= 0.5*cos(M_PI*pos.dir/180);
     }
     animate(value);
+    updatePendulum(&pendulum);
     glutPostRedisplay();
     glutTimerFunc(1000/FPS, timer, value);
 }

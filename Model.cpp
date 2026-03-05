@@ -1,4 +1,5 @@
 #include "Model.h"
+#include "Utils.h"
 #include <GL/freeglut_std.h>
 #include <GL/gl.h>
 #include <GL/glu.h>
@@ -45,7 +46,10 @@ void drawClaws(void) {
     glPopMatrix();
 }
 
-void drawAlien(float leg_angle, float claw_pinch, float claw_raise, bool color) {
+void drawAlien(alienState state, bool color) {
+    const float leg_angle = state.walk;
+    const float claw_pinch = state.pinch;
+    const float claw_raise = state.raise;
     glPushMatrix();
         if (color) {
             const float orange[4] = {0.898, 0.239, 0.114, 1};
@@ -125,7 +129,79 @@ void drawAlien(float leg_angle, float claw_pinch, float claw_raise, bool color) 
                 glColor3d(1, 1, 1);
             glutSolidSphere(0.05, 12, 4);
         glPopMatrix();
-
     glPopMatrix();
 }
 
+static void drawCylinder(float radius, float height) {
+    GLUquadric *q; 
+    q = gluNewQuadric();
+    gluCylinder(q, radius, radius, height, 24, 2);
+    gluQuadricDrawStyle(q, GLU_FILL);
+}
+
+void drawPendulumRide(pendulumState state, alienState astate, bool color) {
+    const float base[4] = {0.2, 0.2, 0.2, 0};
+    const float black[4] = {0, 0, 0, 1};
+    glPushMatrix();
+        if (color) {
+            glColor3fv(base);
+            glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, black);
+        }
+        glTranslatef(0, 15, 0);
+        glPushMatrix();
+            glRotatef(state.angle, 1, 0, 0);
+            glPushMatrix();
+                glScalef(2, 13, 2);
+                glRotatef(45, 0, 1, 0);
+                glutSolidOctahedron();
+            glPopMatrix();
+            glTranslatef(0, -13, 0);
+            glRotatef(state.subangle, 0, 1, 0);
+            glPushMatrix();
+                glRotatef(-90, 1, 0, 0);
+                glutSolidCone(0.6, 4, 24, 2);
+            glPopMatrix();
+            glutSolidCube(1.2);
+            for (int a = 0; a < 361; a += 90) {
+                glPushMatrix();
+                    glRotatef(a, 0, 1, 0);
+                    drawCylinder(0.5, 4);
+                    glTranslatef(0, 0, 4);
+                    GLUquadric *q = gluNewQuadric();
+                    gluCylinder(q, 0.5, 0.7, 0.3, 24, 2);
+                    glTranslatef(0, 0, 1.02);
+                    glRotatef(-90, 1, 0, 0);
+                    drawAlien(astate, color);
+                    // reset color
+                    if (color) {
+                        glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, black);
+                        glColor3fv(base);
+                    }
+                glPopMatrix();
+            }
+        glPopMatrix();
+
+        glTranslatef(1, 0, 0);
+        glPushMatrix();
+            glRotatef(70, 0, 1, 0);
+            glRotatef(50, 1, 0, 0);
+            drawCylinder(1, 21);
+        glPopMatrix();
+        glPushMatrix();
+            glRotatef(110, 0, 1, 0);
+            glRotatef(50, 1, 0, 0);
+            drawCylinder(1, 21);
+        glPopMatrix();
+        glTranslatef(-2, 0, 0);
+        glPushMatrix();
+            glRotatef(-70, 0, 1, 0);
+            glRotatef(50, 1, 0, 0);
+            drawCylinder(1, 21);
+        glPopMatrix();
+        glPushMatrix();
+            glRotatef(-110, 0, 1, 0);
+            glRotatef(50, 1, 0, 0);
+            drawCylinder(1, 21);
+        glPopMatrix();
+    glPopMatrix();
+}
