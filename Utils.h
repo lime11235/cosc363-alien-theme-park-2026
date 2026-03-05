@@ -21,6 +21,12 @@ typedef struct {
     float gravity;
 } pendulumState;
 
+typedef struct {
+    float angle;
+    float acceleration;
+    bool occupied;
+} catapultState;
+
 void getShadowMat(float matrix[16], float lpos[4]);
 void updatePendulum(pendulumState *pendulum);
 

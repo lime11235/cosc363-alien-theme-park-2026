@@ -5,5 +5,6 @@
 
 void drawAlien(alienState state, bool color);
 void drawPendulumRide(pendulumState state, alienState astate, bool color);
+void drawCatapult(catapultState state, alienState astate, bool color);
 
 #endif // !MODEL_H
