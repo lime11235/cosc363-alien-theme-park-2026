@@ -51,7 +51,7 @@ void animate(int value) {
     }
 
     for (auto a : removal) {
-        a.callback();
+        a.callback(value);
         dynamic_animations.erase(a);
     }
 }
@@ -85,4 +85,8 @@ float easeOutBounce(float t) {
     } else {
         return n1 * (t - 2.625 / d1) * (t - 2.625 / d1) + 0.984375;
     }
+}
+
+float easeInQuad(float t) {
+    return t*t;
 }

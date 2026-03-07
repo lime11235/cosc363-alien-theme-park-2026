@@ -9,9 +9,11 @@ typedef struct {
 
 typedef struct {
     float dir;
+    float dirv;
     float x;
     float y;
     float z;
+    bool firstMouse;
 } position;
 
 typedef struct {
@@ -23,11 +25,11 @@ typedef struct {
 
 typedef struct {
     float angle;
-    float acceleration;
     bool occupied;
 } catapultState;
 
 void getShadowMat(float matrix[16], float lpos[4]);
 void updatePendulum(pendulumState *pendulum);
+void initCatapult(catapultState *catapult);
 
 #endif // !UTILS_H

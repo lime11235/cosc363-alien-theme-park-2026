@@ -184,24 +184,100 @@ void drawPendulumRide(pendulumState state, alienState astate, bool color) {
         glTranslatef(1, 0, 0);
         glPushMatrix();
             glRotatef(70, 0, 1, 0);
-            glRotatef(50, 1, 0, 0);
-            drawCylinder(1, 21);
+            glRotatef(60, 1, 0, 0);
+            drawCylinder(1, 18);
         glPopMatrix();
         glPushMatrix();
             glRotatef(110, 0, 1, 0);
-            glRotatef(50, 1, 0, 0);
-            drawCylinder(1, 21);
+            glRotatef(60, 1, 0, 0);
+            drawCylinder(1, 18);
         glPopMatrix();
         glTranslatef(-2, 0, 0);
         glPushMatrix();
             glRotatef(-70, 0, 1, 0);
-            glRotatef(50, 1, 0, 0);
-            drawCylinder(1, 21);
+            glRotatef(60, 1, 0, 0);
+            drawCylinder(1, 18);
         glPopMatrix();
         glPushMatrix();
             glRotatef(-110, 0, 1, 0);
-            glRotatef(50, 1, 0, 0);
-            drawCylinder(1, 21);
+            glRotatef(60, 1, 0, 0);
+            drawCylinder(1, 18);
         glPopMatrix();
+    glPopMatrix();
+}
+
+void drawCatapult(catapultState state, alienState astate, bool color) {
+    const float brown[4] = {0.5882, 0.294, 0, 1};
+    const float black[4] = {0, 0, 0, 1};
+    if (color) {
+        glColor3fv(brown);
+        glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, black);
+    }
+    glPushMatrix();
+        glPushMatrix();
+            glTranslatef(-4, 1, -4);
+            glScalef(1, 2, 20);
+            glutSolidCube(1);
+        glPopMatrix();
+        glPushMatrix();
+            glTranslatef(4, 1, -4);
+            glScalef(1, 2, 20);
+            glutSolidCube(1);
+        glPopMatrix();
+        glPushMatrix();
+            glTranslatef(-4, 4.5, 0);
+            glScalef(1, 5, 2);
+            glutSolidCube(1);
+        glPopMatrix();
+        glPushMatrix();
+            glTranslatef(4, 4.5, 0);
+            glScalef(1, 5, 2);
+            glutSolidCube(1);
+        glPopMatrix();
+        glPushMatrix();
+            glTranslatef(0, 6, 0.5);
+            glScalef(8, 2, 0.5);
+            glutSolidCube(1);
+        glPopMatrix();
+
+        glPushMatrix();
+            glTranslatef(0, 1, 0);
+            glRotatef(90, 0, 1, 0);
+            drawCylinder(0.5, 4);
+            glRotatef(180, 0, 1, 0);
+            drawCylinder(0.5, 4);
+        glPopMatrix();
+
+        glPushMatrix();
+            glTranslatef(0, 1, 0);
+            glRotatef(state.angle, 1, 0, 0);
+            glTranslatef(0, 0, -11);
+
+            glRotatef(-90, 1, 0, 0);
+            GLUquadric *q = gluNewQuadric();
+            gluCylinder(q, 0.5, 1.0, 0.7, 24, 2);
+            glRotatef(90, 1, 0, 0);
+
+            if (state.occupied) {
+                glPushMatrix();
+                    glTranslatef(0, 1.2, 0);
+                    glRotatef(180, 1, 0, 0);
+                    drawAlien(astate, color);
+                    glTranslatef(0, -1.2, 0);
+                glPopMatrix();
+            }
+
+            if (color) {
+                glColor3fv(brown);
+                glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, black);
+            }
+
+            glTranslatef(0, 0, 5);
+
+            glScalef(1.5, 0.5, 12);
+            glutSolidCube(1);
+            glTranslatef(0, 0.5, -6);
+        glPopMatrix();
+
     glPopMatrix();
 }

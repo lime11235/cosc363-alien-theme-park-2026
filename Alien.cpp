@@ -1,6 +1,7 @@
 
 #include <GL/freeglut_std.h>
 #include <GL/gl.h>
+#include <algorithm>
 #include <climits>
 #include <GL/freeglut.h>
 #include <math.h>
@@ -14,12 +15,15 @@ const int FPS = 30;
 
 int frame = 0;
 bool skeystates[256] = {false};
+bool keystates[256] = {false};
 
 position pos = {
-    .dir = 270,
-    .x = 20,
+    .dir = 180,
+    .dirv = 0,
+    .x = 0,
     .y = 15,
-    .z = 0,
+    .z = 20,
+    .firstMouse = true
 };
 
 alienState alienGlobal {
@@ -35,21 +39,10 @@ pendulumState pendulum {
     .gravity = 0
 };
 
-float waddle = -5;
-
-void sidewalk() {
-    static int inc = -1;
-    inc *= -1;
-    registerDynamicAnimation((animation) {
-        .start_ts = frame,
-        .end_ts = frame + 60,
-        .animation_curve = easeInOutQuart,
-        .from = (float)inc * 5,
-        .to = (float)inc * 5 * -1,
-        .value = &waddle,
-        .callback = sidewalk
-    });
-}
+catapultState catapult {
+    .angle = 0,
+    .occupied = true
+};
 
 void drawFloor() {
     bool flag = false;
@@ -77,7 +70,11 @@ void display() {
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
 
-	gluLookAt(pos.x, pos.y, pos.z, pos.x + sin(M_PI*pos.dir/180), pos.y, pos.z + cos(M_PI*pos.dir/180), 0., 1., 0.);
+	gluLookAt(pos.x, pos.y, pos.z, 
+        pos.x + sin(M_PI*pos.dir/180)*cos(M_PI*pos.dirv/180), 
+        pos.y + sin(M_PI*pos.dirv/180), 
+        pos.z + cos(M_PI*pos.dir/180)*cos(M_PI*pos.dirv/180), 
+        0., 1., 0.);
 
     glEnable(GL_LIGHTING);
 	glLightfv(GL_LIGHT0,GL_POSITION, lpos);
@@ -93,8 +90,13 @@ void display() {
     // glPopMatrix();
 
     glPushMatrix();
-        // glTranslatef(0, 0, -10);
+        glTranslatef(-20, 0, 0);
         drawPendulumRide(pendulum, alienGlobal, true);
+    glPopMatrix();
+
+    glPushMatrix();
+        glTranslatef(0, 0, -20);
+        drawCatapult(catapult, alienGlobal, true);
     glPopMatrix();
 
     float shadowMat[16]; 
@@ -105,7 +107,10 @@ void display() {
         glMultMatrixf(shadowMat);
         // glTranslatef(waddle, 0.5, 0);
         glColor4f(0.2, 0.2, 0.2, 1.0);
-        drawPendulumRide(pendulum, alienGlobal, false);
+        glPushMatrix();
+            glTranslatef(-20, 0, 0);
+            drawPendulumRide(pendulum, alienGlobal, false);
+        glPopMatrix();
         // drawAlien(alienGlobal, false);
     glPopMatrix();
 
@@ -157,27 +162,64 @@ void initialize(void) {
         .type = RESTART
     });
 
-    sidewalk();
+    initCatapult(&catapult);
 }
 
 void timer(int value) {
     frame = value;
     value++;
-    if (skeystates[GLUT_KEY_LEFT]) {
-        pos.dir += 5;
-    } else if (skeystates[GLUT_KEY_RIGHT]) {
-        pos.dir -= 5;
-    } else if (skeystates[GLUT_KEY_UP]) {
+    if (skeystates[GLUT_KEY_LEFT] || keystates['a']) {
+        pos.x += 0.5*sin(M_PI*(pos.dir + 90)/180);
+        pos.z += 0.5*cos(M_PI*(pos.dir + 90)/180);
+    } 
+    if (skeystates[GLUT_KEY_RIGHT] || keystates['d']) {
+        pos.x -= 0.5*sin(M_PI*(pos.dir + 90)/180);
+        pos.z -= 0.5*cos(M_PI*(pos.dir + 90)/180);
+    } 
+    if (skeystates[GLUT_KEY_UP] || keystates['w']) {
         pos.x += 0.5*sin(M_PI*pos.dir/180);
         pos.z += 0.5*cos(M_PI*pos.dir/180);
-    } else if (skeystates[GLUT_KEY_DOWN]) {
+    } 
+    if (skeystates[GLUT_KEY_DOWN] || keystates['s']) {
         pos.x -= 0.5*sin(M_PI*pos.dir/180);
         pos.z -= 0.5*cos(M_PI*pos.dir/180);
+    } 
+    if (keystates[' ']) {
+        pos.y += 0.5;
+    }
+    if (skeystates[GLUT_KEY_SHIFT_L]) {
+        pos.y -= 0.5;
     }
     animate(value);
     updatePendulum(&pendulum);
     glutPostRedisplay();
     glutTimerFunc(1000/FPS, timer, value);
+}
+
+void mouseMove(int xpos, int ypos) {
+    static float lastX = 300, lastY = 300;
+    if (pos.firstMouse) {
+        lastX = xpos;
+        lastY = ypos;
+        pos.firstMouse = false;
+    }
+
+    float xoffset = (lastX - xpos) * 0.1;
+    float yoffset = (lastY - ypos) * 0.15;
+    lastX = xpos;
+    lastY = ypos;
+
+    pos.dir += xoffset;
+    pos.dirv += yoffset;
+
+    pos.dirv = min(pos.dirv, 90.0f);
+    pos.dirv = max(pos.dirv, -90.0f);
+}
+
+void mouseClick(int button, int state, int x, int y) {
+    if (state == GLUT_UP) {
+        pos.firstMouse = true;
+    }
 }
 
 void specialUp(int key, int x, int y) {
@@ -186,6 +228,14 @@ void specialUp(int key, int x, int y) {
 
 void specialDown(int key, int x, int y) {
     skeystates[key] = true;
+}
+
+void keyboardUp(unsigned char key, int x, int y) {
+    keystates[key] = false;
+}
+
+void keyboardDown(unsigned char key, int x, int y) {
+    keystates[key] = true;
 }
 
 int main(int argc, char** argv) {
@@ -200,7 +250,11 @@ int main(int argc, char** argv) {
     glutDisplayFunc(display);
     glutSpecialFunc(specialDown);
     glutSpecialUpFunc(specialUp);
+    glutKeyboardFunc(keyboardDown);
+    glutKeyboardUpFunc(keyboardUp);
     glutTimerFunc(1000/FPS, timer, 0);
+    glutMotionFunc(mouseMove);
+    glutMouseFunc(mouseClick);
     glutMainLoop();
     return 0;
 }
