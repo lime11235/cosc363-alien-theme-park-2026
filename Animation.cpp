@@ -32,6 +32,7 @@ void animate(int value) {
 
     for (auto a : dynamic_animations) {
         if (value >= a.end_ts) {
+            *(a.value) = a.to;
             removal.push_back(a);
             continue;
         }
@@ -51,7 +52,8 @@ void animate(int value) {
     }
 
     for (auto a : removal) {
-        a.callback(value);
+        if (a.callback)
+            a.callback(value);
         dynamic_animations.erase(a);
     }
 }

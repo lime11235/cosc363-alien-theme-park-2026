@@ -2,8 +2,8 @@
 #include "Animation.h"
 #include "math.h"
 #include <functional>
-#include <iostream>
 #include <stdlib.h>
+#include "Global.h"
 
 using namespace std;
 
@@ -27,10 +27,40 @@ void updatePendulum(pendulumState *pendulum) {
 }
 
 static function<void(int)> fire;
-static function<void(int)> wait;
 static function<void(int)> winch;
 static function<void(int)> load;
 static function<void(int)> loadfinish;
+
+static void throwAlien(int frame) {
+    catapult.occupied = false;
+    registerDynamicAnimation((animation) {
+        .start_ts = frame,
+        .end_ts = frame + 20,
+        .animation_curve = NULL,
+        .from = thrown.start[0],
+        .to = thrown.end[0],
+        .value = &(thrown.x),
+        .callback = winch
+    });
+    registerDynamicAnimation((animation) {
+        .start_ts = frame + 1,
+        .end_ts = frame + 20,
+        .animation_curve = easeInQuad,
+        .from = thrown.start[1],
+        .to = thrown.end[1],
+        .value = &(thrown.y),
+        .callback = NULL
+    });
+    registerDynamicAnimation((animation) {
+        .start_ts = frame + 2,
+        .end_ts = frame + 20,
+        .animation_curve = NULL,
+        .from = -90,
+        .to = 180,
+        .value = &(thrown.rotation),
+        .callback = NULL
+    });
+}
 
 void initCatapult(catapultState *catapult) {
 
@@ -38,25 +68,12 @@ void initCatapult(catapultState *catapult) {
         catapult->occupied = true;
         registerDynamicAnimation((animation) {
             .start_ts = frame,
-            .end_ts = frame + 6,
+            .end_ts = frame + 10,
             .animation_curve = easeInQuad,
             .from = 0,
             .to = 90,
             .value = &(catapult->angle),
-            .callback = wait
-        });
-    };
-
-    wait = [catapult] (int frame) {
-        catapult->occupied = false;
-        registerDynamicAnimation((animation) {
-            .start_ts = frame,
-            .end_ts = frame + 30,
-            .animation_curve = NULL,
-            .from = 90,
-            .to = 90,
-            .value = &(catapult->angle),
-            .callback = winch
+            .callback = throwAlien
         });
     };
 

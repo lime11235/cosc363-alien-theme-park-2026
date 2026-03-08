@@ -1,4 +1,3 @@
-
 #include <GL/freeglut_std.h>
 #include <GL/gl.h>
 #include <algorithm>
@@ -8,41 +7,12 @@
 #include "Model.h"
 #include "Animation.h"
 #include "Utils.h"
+#include "Global.h"
 
 using namespace std;
 
-const int FPS = 30;
-
-int frame = 0;
 bool skeystates[256] = {false};
 bool keystates[256] = {false};
-
-position pos = {
-    .dir = 180,
-    .dirv = 0,
-    .x = 0,
-    .y = 15,
-    .z = 20,
-    .firstMouse = true
-};
-
-alienState alienGlobal {
-    .pinch = 0,
-    .walk = -10,
-    .raise = 0,
-};
-
-pendulumState pendulum {
-    .angle = 40,
-    .subangle = 0,
-    .velocity = 0.0625,
-    .gravity = 0
-};
-
-catapultState catapult {
-    .angle = 0,
-    .occupied = true
-};
 
 void drawFloor() {
     bool flag = false;
@@ -84,11 +54,6 @@ void display() {
 
 	drawFloor();
 
-    // glPushMatrix();
-    //     glTranslatef(waddle, 0.5, 0);
-    //     drawAlien(alienGlobal, true);
-    // glPopMatrix();
-
     glPushMatrix();
         glTranslatef(-20, 0, 0);
         drawPendulumRide(pendulum, alienGlobal, true);
@@ -97,6 +62,9 @@ void display() {
     glPushMatrix();
         glTranslatef(0, 0, -20);
         drawCatapult(catapult, alienGlobal, true);
+        glTranslatef(0, thrown.y, thrown.x);
+        glRotatef(thrown.rotation, 1, 0, 0);
+        drawAlien(alienGlobal, true);
     glPopMatrix();
 
     float shadowMat[16]; 
@@ -105,13 +73,11 @@ void display() {
     glDisable(GL_LIGHTING);
     glPushMatrix();
         glMultMatrixf(shadowMat);
-        // glTranslatef(waddle, 0.5, 0);
         glColor4f(0.2, 0.2, 0.2, 1.0);
         glPushMatrix();
             glTranslatef(-20, 0, 0);
             drawPendulumRide(pendulum, alienGlobal, false);
         glPopMatrix();
-        // drawAlien(alienGlobal, false);
     glPopMatrix();
 
     glFlush();

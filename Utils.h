@@ -28,6 +28,14 @@ typedef struct {
     bool occupied;
 } catapultState;
 
+typedef struct {
+    float x;
+    float y;
+    float rotation;
+    float start[2];
+    float end[2];
+} thrownAlien;
+
 void getShadowMat(float matrix[16], float lpos[4]);
 void updatePendulum(pendulumState *pendulum);
 void initCatapult(catapultState *catapult);
