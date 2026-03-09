@@ -206,6 +206,23 @@ void drawPendulumRide(pendulumState state, alienState astate, bool color) {
     glPopMatrix();
 }
 
+static void drawAlienLoader(catapultState state, alienState astate, bool color) {
+    glTranslatef(0, 0.4, state.load*5.5);
+    glRotatef(-90, 0, 1, 0);
+    drawAlien((alienState) {
+        .pinch = astate.pinch,
+        .walk = state.moving ? astate.walk : 0,
+        .raise = 70.0f * state.load
+    }, color);
+    if (state.grab) {
+        glRotatef(-70*state.load, 1, 0, 0);
+        glTranslatef(0, 0, 2);
+        glRotatef(-70*state.load, 1, 0, 0);
+        glRotatef(-90, 0, 1, 0);
+        drawAlien(astate, color);
+    }
+}
+
 void drawCatapult(catapultState state, alienState astate, bool color) {
     const float brown[4] = {0.5882, 0.294, 0, 1};
     const float black[4] = {0, 0, 0, 1};
@@ -276,8 +293,11 @@ void drawCatapult(catapultState state, alienState astate, bool color) {
 
             glScalef(1.5, 0.5, 12);
             glutSolidCube(1);
-            glTranslatef(0, 0.5, -6);
         glPopMatrix();
 
+        glPushMatrix();
+            glTranslatef(2, 0, -18);
+            drawAlienLoader(state, astate, color);
+        glPopMatrix();
     glPopMatrix();
 }

@@ -27,7 +27,10 @@ pendulumState pendulum = {
 
 catapultState catapult = {
     .angle = 0,
-    .occupied = true
+    .occupied = true,
+    .load = 0,
+    .moving = false,
+    .grab = false
 };
 
 thrownAlien thrown = {

@@ -66,6 +66,7 @@ void initCatapult(catapultState *catapult) {
 
     fire = [catapult] (int frame) {
         catapult->occupied = true;
+        catapult->moving = false;
         registerDynamicAnimation((animation) {
             .start_ts = frame,
             .end_ts = frame + 10,
@@ -90,26 +91,29 @@ void initCatapult(catapultState *catapult) {
     };
 
     load = [catapult] (int frame) {
+        catapult->moving = true;
+        catapult->grab = true;
         registerDynamicAnimation((animation) {
             .start_ts = frame,
-            .end_ts = frame + 15,
+            .end_ts = frame + 30,
             .animation_curve = NULL,
             .from = 0,
-            .to = 0,
-            .value = &(catapult->angle),
+            .to = 1.2,
+            .value = &(catapult->load),
             .callback = loadfinish
         });
     };
 
     loadfinish = [catapult] (int frame) {
         catapult->occupied = true;
+        catapult->grab = false;
         registerDynamicAnimation((animation) {
-            .start_ts = frame,
-            .end_ts = frame + 15,
+            .start_ts = frame + 10,
+            .end_ts = frame + 40,
             .animation_curve = NULL,
-            .from = 0,
+            .from = 1,
             .to = 0,
-            .value = &(catapult->angle),
+            .value = &(catapult->load),
             .callback = fire
         });
     };

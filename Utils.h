@@ -26,6 +26,9 @@ typedef struct {
 typedef struct {
     float angle;
     bool occupied;
+    float load;
+    bool moving;
+    bool grab; 
 } catapultState;
 
 typedef struct {
