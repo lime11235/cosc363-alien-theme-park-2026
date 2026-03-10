@@ -8,6 +8,7 @@
 #include "Animation.h"
 #include "Utils.h"
 #include "Global.h"
+#include "loadTGA.h"
 
 using namespace std;
 
@@ -15,19 +16,20 @@ bool skeystates[256] = {false};
 bool keystates[256] = {false};
 
 void drawFloor() {
-    bool flag = false;
-
 	glBegin(GL_QUADS);
 	glNormal3f(0, 1, 0);
+    glColor3f(1, 1, 1);
+    glBindTexture(GL_TEXTURE_2D, texIds[0]);
 	for (int x = -50; x <= 50; x++) {
 		for (int z = -50; z <= 50; z++) {
-			if (flag) glColor3f(0.6, 1.0, 0.8);
-			else 	  glColor3f(0.8, 1.0, 0.6);
+            glTexCoord2f(0, 0);
 			glVertex3f(x, -0.001, z);
+            glTexCoord2f(0, 1);
 			glVertex3f(x, -0.001, z+1);
+            glTexCoord2f(1, 1);
 			glVertex3f(x+1, -0.001, z+1);
+            glTexCoord2f(1, 0);
 			glVertex3f(x+1, -0.001, z);
-			flag = !flag;
 		}
 	}
 	glEnd();
@@ -98,6 +100,13 @@ void initialize(void) {
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
 	gluPerspective(50., 1., 1., 1000.);
+
+    glGenTextures(1, texIds);
+    glBindTexture(GL_TEXTURE_2D, texIds[0]);
+    loadTGA("resources/redsoil.tga");
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER,GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER,GL_LINEAR);
+    glEnable(GL_TEXTURE_2D);
 
     registerStaticAnimation((animation_infinite) {
         .value = &(alienGlobal.walk),

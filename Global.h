@@ -4,12 +4,15 @@
 #include "Utils.h"
 #include <stdlib.h>
 #include <stdbool.h>
+#include <GL/gl.h>
 
 extern int FPS;
 
 extern int frame;
 
 extern bool wireframe;
+
+extern GLuint texIds[1];
 
 extern position pos;
 
