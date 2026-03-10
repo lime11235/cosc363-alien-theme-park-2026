@@ -14,12 +14,12 @@ static void drawLeg(float angle) {
     glPushMatrix();
         GLUquadric *q = gluNewQuadric();
         glRotatef(angle + 15.0, 1, 0, 0);
-        gluCylinder(q, 0.18, 0.14, 0.6, 12, 1);
+        gluCylinder(q, 0.18, 0.14, 0.6, 8, 1);
         gluQuadricDrawStyle(q, GLU_FILL);
         glTranslatef(0, 0, 0.55);
         glutSolidSphere(0.14, 6, 2);
         glRotatef(angle + 80.0, 1, 0, 0);
-        glutSolidCone(0.16, 0.6, 12, 1);
+        glutSolidCone(0.16, 0.6, 8, 1);
     glPopMatrix();
 }
 

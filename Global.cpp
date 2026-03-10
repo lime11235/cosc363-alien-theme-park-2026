@@ -2,6 +2,7 @@
 
 int FPS = 30;
 int frame = 0;
+bool wireframe = false;
 
 position pos = {
     .dir = 180,

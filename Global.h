@@ -9,6 +9,8 @@ extern int FPS;
 
 extern int frame;
 
+extern bool wireframe;
+
 extern position pos;
 
 extern alienState alienGlobal;

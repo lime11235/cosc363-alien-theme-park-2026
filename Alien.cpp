@@ -35,7 +35,7 @@ void drawFloor() {
 
 void display() {
 	float lpos[4] = {5., 50., 0., 1.0};  //light's position
-    glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+    glPolygonMode(GL_FRONT_AND_BACK, wireframe ? GL_LINE : GL_FILL);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); 
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
@@ -46,7 +46,10 @@ void display() {
         pos.z + cos(M_PI*pos.dir/180)*cos(M_PI*pos.dirv/180), 
         0., 1., 0.);
 
-    glEnable(GL_LIGHTING);
+    if (!wireframe)
+        glEnable(GL_LIGHTING);
+    else 
+        glDisable(GL_LIGHTING);
 	glLightfv(GL_LIGHT0,GL_POSITION, lpos);
     // float red[4] = {0, 1, 0, 1};
     // glLightfv(GL_LIGHT0, GL_DIFFUSE, red);
@@ -201,6 +204,8 @@ void keyboardUp(unsigned char key, int x, int y) {
 }
 
 void keyboardDown(unsigned char key, int x, int y) {
+    if (key == 'q') 
+        wireframe = !wireframe;
     keystates[key] = true;
 }
 
