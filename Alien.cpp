@@ -80,7 +80,7 @@ void display() {
         glPopMatrix();
     glPopMatrix();
 
-    glFlush();
+    glutSwapBuffers();
 }
 
 void initialize(void) {
@@ -206,7 +206,7 @@ void keyboardDown(unsigned char key, int x, int y) {
 
 int main(int argc, char** argv) {
     glutInit(&argc, argv);
-    glutInitDisplayMode(GLUT_SINGLE | GLUT_DEPTH);
+    glutInitDisplayMode(GLUT_DOUBLE | GLUT_DEPTH);
     glutInitWindowSize(600, 600);
     glutInitWindowPosition(10, 10);
     glutCreateWindow("Alien Theme Park");

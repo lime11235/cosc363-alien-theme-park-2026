@@ -17,7 +17,7 @@ static void drawLeg(float angle) {
         gluCylinder(q, 0.18, 0.14, 0.6, 12, 1);
         gluQuadricDrawStyle(q, GLU_FILL);
         glTranslatef(0, 0, 0.55);
-        glutSolidSphere(0.14, 12, 4);
+        glutSolidSphere(0.14, 6, 2);
         glRotatef(angle + 80.0, 1, 0, 0);
         glutSolidCone(0.16, 0.6, 12, 1);
     glPopMatrix();
@@ -26,23 +26,23 @@ static void drawLeg(float angle) {
 void drawClaws(void) {
     glPushMatrix();
         GLUquadric *q = gluNewQuadric();
-        gluCylinder(q, 0.18, 0.14, 0.6, 12, 1);
+        gluCylinder(q, 0.18, 0.14, 0.6, 6, 1);
         gluQuadricDrawStyle(q, GLU_FILL);
         glTranslatef(0, 0, 0.55);
-        glutSolidSphere(0.14, 12, 4);
+        glutSolidSphere(0.14, 6, 2);
         glRotatef(90, 0, 1, 0);
-        glutSolidCone(0.14, 0.7, 12, 1);
+        glutSolidCone(0.14, 0.7, 6, 1);
         glRotatef(-45, 0, 1, 0);
         glScalef(1.6, 1, 1);
         glRotatef(10, 0, 1, 0);
         glScalef(1.2, 1, 1);
         glRotatef(-10, 0, 1, 0);
-        gluCylinder(q, 0.1, 0.15, 0.6, 12, 1);
+        gluCylinder(q, 0.1, 0.15, 0.6, 6, 1);
         glTranslatef(0, 0, 0.6);
-        glutSolidSphere(0.15, 12, 4);
+        glutSolidSphere(0.15, 6, 2);
         glRotatef(30, 0, 1, 0);
         glTranslatef(0, 0, 0.04);
-        glutSolidCone(0.15, 0.27, 12, 1);
+        glutSolidCone(0.15, 0.27, 6, 1);
     glPopMatrix();
 }
 
@@ -64,7 +64,7 @@ void drawAlien(alienState state, bool color) {
         glPushMatrix();
             glTranslatef(0, 0.3, 0);
             glScalef(1.0, 0.6, 1.0);
-            glutSolidSphere(1.0, 24, 8);
+            glutSolidSphere(1.0, 12, 4);
         glPopMatrix();
 
         glPushMatrix();
@@ -110,12 +110,12 @@ void drawAlien(alienState state, bool color) {
             if (color)
                 glColor3d(0.02, 0.02, 0.02);
             glTranslatef(0.4, 0.35, 0.8);
-            glutSolidSphere(0.15, 12, 4);
+            glutSolidSphere(0.15, 6, 2);
             glRotatef(20, 0, 1, 0);
             glTranslatef(0.07, 0.07, 0.07);
             if (color)
                 glColor3d(1, 1, 1);
-            glutSolidSphere(0.05, 12, 4);
+            glutSolidSphere(0.05, 6, 2);
         glPopMatrix();
 
         glPushMatrix();
@@ -123,11 +123,11 @@ void drawAlien(alienState state, bool color) {
                 glColor3d(0.02, 0.02, 0.02);
             glTranslatef(-0.4, 0.35, 0.8);
             glRotatef(-20, 0, 1, 0);
-            glutSolidSphere(0.15, 12, 4);
+            glutSolidSphere(0.15, 6, 2);
             glTranslatef(0.07, 0.07, 0.07);
             if (color)
                 glColor3d(1, 1, 1);
-            glutSolidSphere(0.05, 12, 4);
+            glutSolidSphere(0.05, 6, 2);
         glPopMatrix();
     glPopMatrix();
 }
@@ -135,7 +135,7 @@ void drawAlien(alienState state, bool color) {
 static void drawCylinder(float radius, float height) {
     GLUquadric *q; 
     q = gluNewQuadric();
-    gluCylinder(q, radius, radius, height, 24, 2);
+    gluCylinder(q, radius, radius, height, 6, 1);
     gluQuadricDrawStyle(q, GLU_FILL);
 }
 
@@ -159,7 +159,7 @@ void drawPendulumRide(pendulumState state, alienState astate, bool color) {
             glRotatef(state.subangle, 0, 1, 0);
             glPushMatrix();
                 glRotatef(-90, 1, 0, 0);
-                glutSolidCone(0.6, 4, 24, 2);
+                glutSolidCone(0.6, 4, 6, 1);
             glPopMatrix();
             glutSolidCube(1.2);
             for (int a = 0; a < 361; a += 90) {
@@ -272,7 +272,7 @@ void drawCatapult(catapultState state, alienState astate, bool color) {
 
             glRotatef(-90, 1, 0, 0);
             GLUquadric *q = gluNewQuadric();
-            gluCylinder(q, 0.5, 1.0, 0.7, 24, 2);
+            gluCylinder(q, 0.5, 1.0, 0.7, 12, 1);
             glRotatef(90, 1, 0, 0);
 
             if (state.occupied) {
