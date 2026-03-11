@@ -12,7 +12,7 @@ extern int frame;
 
 extern bool wireframe;
 
-extern GLuint texIds[1];
+extern GLuint texIds[];
 
 extern position pos;
 

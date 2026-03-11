@@ -16,23 +16,26 @@ bool skeystates[256] = {false};
 bool keystates[256] = {false};
 
 void drawFloor() {
+    glEnable(GL_TEXTURE_2D);
+    glBindTexture(GL_TEXTURE_2D, texIds[0]);
 	glBegin(GL_QUADS);
 	glNormal3f(0, 1, 0);
     glColor3f(1, 1, 1);
-    glBindTexture(GL_TEXTURE_2D, texIds[0]);
 	for (int x = -50; x <= 50; x++) {
 		for (int z = -50; z <= 50; z++) {
-            glTexCoord2f(0, 0);
+            const float scale = 0.125;
+            glTexCoord2f(x*scale, z*scale);
 			glVertex3f(x, -0.001, z);
-            glTexCoord2f(0, 1);
+            glTexCoord2f(x*scale, (z+1)*scale);
 			glVertex3f(x, -0.001, z+1);
-            glTexCoord2f(1, 1);
+            glTexCoord2f((x+1)*scale, (z+1)*scale);
 			glVertex3f(x+1, -0.001, z+1);
-            glTexCoord2f(1, 0);
+            glTexCoord2f((x+1)*scale, z*scale);
 			glVertex3f(x+1, -0.001, z);
 		}
 	}
 	glEnd();
+    glDisable(GL_TEXTURE_2D);
 }
 
 void display() {
@@ -101,12 +104,17 @@ void initialize(void) {
 	glLoadIdentity();
 	gluPerspective(50., 1., 1., 1000.);
 
-    glGenTextures(1, texIds);
+    glGenTextures(2, texIds);
     glBindTexture(GL_TEXTURE_2D, texIds[0]);
     loadTGA("resources/redsoil.tga");
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER,GL_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER,GL_LINEAR);
-    glEnable(GL_TEXTURE_2D);
+    glTexEnvi(GL_TEXTURE, GL_TEXTURE_ENV_MODE, GL_MODULATE);
+    glBindTexture(GL_TEXTURE_2D, texIds[1]);
+    loadTGA("resources/woodplanks.tga");
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER,GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER,GL_LINEAR);
+    glTexEnvi(GL_TEXTURE, GL_TEXTURE_ENV_MODE, GL_MODULATE);
 
     registerStaticAnimation((animation_infinite) {
         .value = &(alienGlobal.walk),
