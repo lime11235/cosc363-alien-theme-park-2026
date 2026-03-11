@@ -4,6 +4,7 @@
 #include <GL/gl.h>
 #include <GL/glu.h>
 #include <math.h>
+#include "Global.h"
 
 using namespace std;
 
@@ -300,4 +301,15 @@ void drawCatapult(catapultState state, alienState astate, bool color) {
             drawAlienLoader(state, astate, color);
         glPopMatrix();
     glPopMatrix();
+}
+
+void drawSky(void) {
+    GLUquadricObj *q = gluNewQuadric();
+    gluQuadricTexture(q, GL_TRUE);
+    glEnable(GL_TEXTURE_2D);
+    glBindTexture(GL_TEXTURE_2D, texIds[2]);
+    glRotatef(-90, 1, 0, 0);
+    gluSphere(q, 200, 18, 9);
+    gluQuadricOrientation(q, GLU_INSIDE);
+    glDisable(GL_TEXTURE_2D);
 }

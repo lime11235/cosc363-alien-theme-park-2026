@@ -1,5 +1,6 @@
 #include <GL/freeglut_std.h>
 #include <GL/gl.h>
+#include <GL/glu.h>
 #include <algorithm>
 #include <climits>
 #include <GL/freeglut.h>
@@ -63,6 +64,11 @@ void display() {
 	drawFloor();
 
     glPushMatrix();
+        glTranslatef(pos.x, pos.y, pos.z);
+        drawSky();
+    glPopMatrix();
+
+    glPushMatrix();
         glTranslatef(-20, 0, 0);
         drawPendulumRide(pendulum, alienGlobal, true);
     glPopMatrix();
@@ -115,6 +121,11 @@ void initialize(void) {
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER,GL_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER,GL_LINEAR);
     glTexEnvi(GL_TEXTURE, GL_TEXTURE_ENV_MODE, GL_MODULATE);
+    glBindTexture(GL_TEXTURE_2D, texIds[2]);
+    loadTGA("resources/nightsky.tga");
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER,GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER,GL_LINEAR);
+    glTexEnvi(GL_TEXTURE, GL_TEXTURE_ENV_MODE, GL_REPLACE);
 
     registerStaticAnimation((animation_infinite) {
         .value = &(alienGlobal.walk),

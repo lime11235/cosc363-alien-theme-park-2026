@@ -3,7 +3,7 @@
 int FPS = 30;
 int frame = 0;
 bool wireframe = false;
-GLuint texIds[2];
+GLuint texIds[3];
 
 position pos = {
     .dir = 180,
