@@ -3,7 +3,7 @@
 int FPS = 30;
 int frame = 0;
 bool wireframe = false;
-GLuint texIds[3];
+GLuint texIds[4];
 
 position pos = {
     .dir = 180,
@@ -32,7 +32,8 @@ catapultState catapult = {
     .occupied = true,
     .load = 0,
     .moving = false,
-    .grab = false
+    .grab = false,
+    .qoffset = 0
 };
 
 thrownAlien thrown = {

@@ -102,6 +102,15 @@ void initCatapult(catapultState *catapult) {
             .value = &(catapult->load),
             .callback = loadfinish
         });
+        registerDynamicAnimation((animation) {
+            .start_ts = frame+1,
+            .end_ts = frame + 30,
+            .animation_curve = NULL,
+            .from = 4.0,
+            .to = 0,
+            .value = &(catapult->qoffset),
+            .callback = NULL
+        });
     };
 
     loadfinish = [catapult] (int frame) {

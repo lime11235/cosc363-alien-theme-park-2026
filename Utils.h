@@ -29,6 +29,7 @@ typedef struct {
     float load;
     bool moving;
     bool grab; 
+    float qoffset;
 } catapultState;
 
 typedef struct {

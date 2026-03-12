@@ -224,46 +224,105 @@ static void drawAlienLoader(catapultState state, alienState astate, bool color) 
     }
 }
 
+static void drawWoodCube(float l, bool color) {
+    float s = 0.5;
+    if (color) {
+        glEnable(GL_TEXTURE_2D);
+        glBindTexture(GL_TEXTURE_2D, texIds[3]);
+    }
+    glBegin(GL_QUADS);
+
+    glNormal3f(0, 0, 1);
+    glTexCoord2f(0, 0); glVertex3f(-s,-s, s);
+    glTexCoord2f(l, 0); glVertex3f( s,-s, s);
+    glTexCoord2f(l, 1); glVertex3f( s, s, s);
+    glTexCoord2f(0, 1); glVertex3f(-s, s, s);
+
+    glNormal3f(0, 0,-1);
+    glTexCoord2f(0, 0); glVertex3f( s,-s,-s);
+    glTexCoord2f(l, 0); glVertex3f(-s,-s,-s);
+    glTexCoord2f(l, 1); glVertex3f(-s, s,-s);
+    glTexCoord2f(0, 1); glVertex3f( s, s,-s);
+
+    glNormal3f(-1, 0, 0);
+    glTexCoord2f(0, 0); glVertex3f(-s,-s, s);
+    glTexCoord2f(1, 0); glVertex3f(-s,-s,-s);
+    glTexCoord2f(1, 1); glVertex3f(-s, s,-s);
+    glTexCoord2f(0, 1); glVertex3f(-s, s, s);
+
+    glNormal3f(1, 0, 0);
+    glTexCoord2f(0, 0); glVertex3f( s,-s, s);
+    glTexCoord2f(1, 0); glVertex3f( s,-s,-s);
+    glTexCoord2f(1, 1); glVertex3f( s, s,-s);
+    glTexCoord2f(0, 1); glVertex3f( s, s, s);
+
+    glNormal3f(0, 1, 0);
+    glTexCoord2f(0, 0); glVertex3f(-s, s, s);
+    glTexCoord2f(l, 0); glVertex3f( s, s, s);
+    glTexCoord2f(l, 1); glVertex3f( s, s,-s);
+    glTexCoord2f(0, 1); glVertex3f(-s, s,-s);
+
+    glNormal3f(0,-1, 0);
+    glTexCoord2f(0, 0); glVertex3f(-s,-s,-s);
+    glTexCoord2f(l, 0); glVertex3f( s,-s,-s);
+    glTexCoord2f(l, 1); glVertex3f( s,-s, s);
+    glTexCoord2f(0, 1); glVertex3f(-s,-s, s);
+
+    glEnd();
+    glDisable(GL_TEXTURE_2D);
+}
+
 void drawCatapult(catapultState state, alienState astate, bool color) {
     const float brown[4] = {0.5882, 0.294, 0, 1};
     const float black[4] = {0, 0, 0, 1};
+    const float white[4] = {1, 1, 1, 1};
     if (color) {
-        glColor3fv(brown);
+        glColor3fv(white);
         glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, black);
     }
     glPushMatrix();
         glPushMatrix();
             glTranslatef(-4, 1, -4);
             glScalef(1, 2, 20);
-            glutSolidCube(1);
+            glRotatef(90, 0, 1, 0);
+            drawWoodCube(3, color);
         glPopMatrix();
         glPushMatrix();
             glTranslatef(4, 1, -4);
             glScalef(1, 2, 20);
-            glutSolidCube(1);
+            glRotatef(90, 0, 1, 0);
+            drawWoodCube(3, color);
         glPopMatrix();
         glPushMatrix();
             glTranslatef(-4, 4.5, 0);
             glScalef(1, 5, 2);
-            glutSolidCube(1);
+            glRotatef(90, 0, 0, 1);
+            drawWoodCube(1, color);
         glPopMatrix();
         glPushMatrix();
             glTranslatef(4, 4.5, 0);
             glScalef(1, 5, 2);
-            glutSolidCube(1);
+            glRotatef(90, 0, 0, 1);
+            drawWoodCube(1, color);
         glPopMatrix();
         glPushMatrix();
-            glTranslatef(0, 6, 0.5);
+            glTranslatef(0, 5.99, 0.5);
             glScalef(8, 2, 0.5);
-            glutSolidCube(1);
+            drawWoodCube(1, color);
         glPopMatrix();
 
         glPushMatrix();
             glTranslatef(0, 1, 0);
             glRotatef(90, 0, 1, 0);
-            drawCylinder(0.5, 4);
+            GLUquadric *q = gluNewQuadric();
+            if (color) {
+                gluQuadricTexture(q, GL_TRUE);
+                glBindTexture(GL_TEXTURE_2D, texIds[3]);
+                glEnable(GL_TEXTURE_2D);
+            }
+            gluCylinder(q, 0.5, 0.5, 4, 6, 1);
             glRotatef(180, 0, 1, 0);
-            drawCylinder(0.5, 4);
+            gluCylinder(q, 0.5, 0.5, 4, 6, 1);
         glPopMatrix();
 
         glPushMatrix();
@@ -272,9 +331,10 @@ void drawCatapult(catapultState state, alienState astate, bool color) {
             glTranslatef(0, 0, -11);
 
             glRotatef(-90, 1, 0, 0);
-            GLUquadric *q = gluNewQuadric();
+            q = gluNewQuadric();
             gluCylinder(q, 0.5, 1.0, 0.7, 12, 1);
             glRotatef(90, 1, 0, 0);
+            glDisable(GL_TEXTURE_2D);
 
             if (state.occupied) {
                 glPushMatrix();
@@ -286,14 +346,14 @@ void drawCatapult(catapultState state, alienState astate, bool color) {
             }
 
             if (color) {
-                glColor3fv(brown);
+                glColor3fv(white);
                 glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, black);
             }
 
             glTranslatef(0, 0, 5);
-
             glScalef(1.5, 0.5, 12);
-            glutSolidCube(1);
+            glRotatef(90, 0, 1, 0);
+            drawWoodCube(2, color);
         glPopMatrix();
 
         glPushMatrix();
@@ -304,12 +364,100 @@ void drawCatapult(catapultState state, alienState astate, bool color) {
 }
 
 void drawSky(void) {
+    glEnable(GL_TEXTURE_2D);
     GLUquadricObj *q = gluNewQuadric();
     gluQuadricTexture(q, GL_TRUE);
-    glEnable(GL_TEXTURE_2D);
+    gluQuadricOrientation(q, GLU_INSIDE);
     glBindTexture(GL_TEXTURE_2D, texIds[2]);
+    glColor3f(1, 1, 1);
     glRotatef(-90, 1, 0, 0);
     gluSphere(q, 200, 18, 9);
-    gluQuadricOrientation(q, GLU_INSIDE);
     glDisable(GL_TEXTURE_2D);
+}
+
+void drawFloor(void) {
+    glEnable(GL_TEXTURE_2D);
+    glBindTexture(GL_TEXTURE_2D, texIds[0]);
+	glBegin(GL_QUADS);
+	glNormal3f(0, 1, 0);
+    glColor3f(1, 1, 1);
+	for (int x = -50; x <= 50; x++) {
+		for (int z = -50; z <= 50; z++) {
+            const float scale = 0.125;
+            glTexCoord2f(x*scale, z*scale);
+			glVertex3f(x, -0.001, z);
+            glTexCoord2f(x*scale, (z+1)*scale);
+			glVertex3f(x, -0.001, z+1);
+            glTexCoord2f((x+1)*scale, (z+1)*scale);
+			glVertex3f(x+1, -0.001, z+1);
+            glTexCoord2f((x+1)*scale, z*scale);
+			glVertex3f(x+1, -0.001, z);
+		}
+	}
+	glEnd();
+    glDisable(GL_TEXTURE_2D);
+}
+
+void drawLavaPit(bool color) {
+    const float red[4] = {0.8941, 0.1333, 0.0902, 1};
+    const float black[4] = {0, 0, 0, 1};
+    const float white[4] = {1, 1, 1, 1};
+    const float stone[4] = {0.533, 0.5490, 0.5529, 1};
+    if (color) {
+        glMaterialfv(GL_FRONT, GL_EMISSION, black);
+        glColor3fv(white);
+        glEnable(GL_TEXTURE_2D);
+    }
+
+    glPushMatrix();
+        GLUquadric *q = gluNewQuadric();
+        glRotatef(-90, 1, 0, 0);
+        if (color) {
+            gluQuadricTexture(q, GL_TRUE);
+            glBindTexture(GL_TEXTURE_2D, texIds[1]);
+
+            glMatrixMode(GL_TEXTURE);
+            glPushMatrix();
+            glScalef(4, 1, 1);
+            glMatrixMode(GL_MODELVIEW);
+        }
+
+        gluCylinder(q, 4, 4, 3, 12, 1);
+        gluCylinder(q, 5, 5, 3, 12, 1);
+
+        glTranslatef(0, 0, 3);
+        gluDisk(q, 4, 5, 12, 1);
+
+        if (color) {
+            glMatrixMode(GL_TEXTURE);
+            glPopMatrix();
+            glMatrixMode(GL_MODELVIEW);
+
+            glColor3fv(red);
+            glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, black);
+            glMaterialfv(GL_FRONT, GL_EMISSION, red);
+            glDisable(GL_TEXTURE_2D);
+        }
+
+        glTranslatef(0, 0, -1);
+        gluDisk(q, 0, 4, 12, 1);
+    glPopMatrix();
+    glMaterialfv(GL_FRONT, GL_EMISSION, black);
+}
+
+void drawAlienQueue(bool color) {
+    glPushMatrix();
+    glTranslatef(0, 0.4, catapult.qoffset);
+    for (int i = 0; i<3; i++) {
+        glPushMatrix();
+            glRotatef(-90, 0, 1, 0);
+            drawAlien(catapult.grab ? alienGlobal : (alienState) {
+                .pinch = alienGlobal.pinch,
+                .walk = 0,
+                .raise = 0
+            }, color);
+        glPopMatrix();
+        glTranslatef(0, 0, 4);
+    }
+    glPopMatrix();
 }

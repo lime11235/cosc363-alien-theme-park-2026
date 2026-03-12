@@ -16,31 +16,36 @@ using namespace std;
 bool skeystates[256] = {false};
 bool keystates[256] = {false};
 
-void drawFloor() {
-    glEnable(GL_TEXTURE_2D);
-    glBindTexture(GL_TEXTURE_2D, texIds[0]);
-	glBegin(GL_QUADS);
-	glNormal3f(0, 1, 0);
-    glColor3f(1, 1, 1);
-	for (int x = -50; x <= 50; x++) {
-		for (int z = -50; z <= 50; z++) {
-            const float scale = 0.125;
-            glTexCoord2f(x*scale, z*scale);
-			glVertex3f(x, -0.001, z);
-            glTexCoord2f(x*scale, (z+1)*scale);
-			glVertex3f(x, -0.001, z+1);
-            glTexCoord2f((x+1)*scale, (z+1)*scale);
-			glVertex3f(x+1, -0.001, z+1);
-            glTexCoord2f((x+1)*scale, z*scale);
-			glVertex3f(x+1, -0.001, z);
-		}
-	}
-	glEnd();
-    glDisable(GL_TEXTURE_2D);
+void drawEverything(bool color) {
+    glPushMatrix();
+        glTranslatef(30, 0, 0);
+        drawPendulumRide(pendulum, alienGlobal, color);
+    glPopMatrix();
+
+    glPushMatrix();
+        glTranslatef(-15, 0, -20);
+        glRotatef(90, 0, 1, 0);
+        drawCatapult(catapult, alienGlobal, color);
+        glPushMatrix();
+            glTranslatef(0, thrown.y, thrown.x);
+            glRotatef(thrown.rotation, 1, 0, 0);
+            drawAlien(alienGlobal, color);
+        glPopMatrix();
+        glPushMatrix();
+            glTranslatef(-0.3, 0, -18);
+            glRotatef(-90, 0, 1, 0);
+            drawAlienQueue(color);
+        glPopMatrix();
+    glPopMatrix();
+
+    glPushMatrix();
+        glTranslatef(12, 0, -20);
+        drawLavaPit(color);
+    glPopMatrix();
 }
 
 void display() {
-	float lpos[4] = {5., 50., 0., 1.0};  //light's position
+	float lpos[4] = {0., 50., 0., 1.0};  //light's position
     glPolygonMode(GL_FRONT_AND_BACK, wireframe ? GL_LINE : GL_FILL);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); 
 	glMatrixMode(GL_MODELVIEW);
@@ -69,16 +74,7 @@ void display() {
     glPopMatrix();
 
     glPushMatrix();
-        glTranslatef(-20, 0, 0);
-        drawPendulumRide(pendulum, alienGlobal, true);
-    glPopMatrix();
-
-    glPushMatrix();
-        glTranslatef(0, 0, -20);
-        drawCatapult(catapult, alienGlobal, true);
-        glTranslatef(0, thrown.y, thrown.x);
-        glRotatef(thrown.rotation, 1, 0, 0);
-        drawAlien(alienGlobal, true);
+        drawEverything(true);
     glPopMatrix();
 
     float shadowMat[16]; 
@@ -88,13 +84,18 @@ void display() {
     glPushMatrix();
         glMultMatrixf(shadowMat);
         glColor4f(0.2, 0.2, 0.2, 1.0);
-        glPushMatrix();
-            glTranslatef(-20, 0, 0);
-            drawPendulumRide(pendulum, alienGlobal, false);
-        glPopMatrix();
+        drawEverything(false);
     glPopMatrix();
 
     glutSwapBuffers();
+}
+
+void loadTexture(size_t index, char *path, GLint mode) {
+    glBindTexture(GL_TEXTURE_2D, texIds[index]);
+    loadTGA(path);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER,GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER,GL_LINEAR);
+    glTexEnvi(GL_TEXTURE, GL_TEXTURE_ENV_MODE, mode);
 }
 
 void initialize(void) {
@@ -110,22 +111,11 @@ void initialize(void) {
 	glLoadIdentity();
 	gluPerspective(50., 1., 1., 1000.);
 
-    glGenTextures(2, texIds);
-    glBindTexture(GL_TEXTURE_2D, texIds[0]);
-    loadTGA("resources/redsoil.tga");
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER,GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER,GL_LINEAR);
-    glTexEnvi(GL_TEXTURE, GL_TEXTURE_ENV_MODE, GL_MODULATE);
-    glBindTexture(GL_TEXTURE_2D, texIds[1]);
-    loadTGA("resources/woodplanks.tga");
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER,GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER,GL_LINEAR);
-    glTexEnvi(GL_TEXTURE, GL_TEXTURE_ENV_MODE, GL_MODULATE);
-    glBindTexture(GL_TEXTURE_2D, texIds[2]);
-    loadTGA("resources/nightsky.tga");
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER,GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER,GL_LINEAR);
-    glTexEnvi(GL_TEXTURE, GL_TEXTURE_ENV_MODE, GL_REPLACE);
+    glGenTextures(4, texIds);
+    loadTexture(0, (char*)"resources/redsoil.tga", GL_MODULATE);
+    loadTexture(1, (char*)"resources/bricks.tga", GL_MODULATE);
+    loadTexture(2, (char*)"resources/nightsky.tga", GL_REPLACE);
+    loadTexture(3, (char*)"resources/woodplanks.tga", GL_MODULATE);
 
     registerStaticAnimation((animation_infinite) {
         .value = &(alienGlobal.walk),
