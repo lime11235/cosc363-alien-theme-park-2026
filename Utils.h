@@ -33,6 +33,13 @@ typedef struct {
 } catapultState;
 
 typedef struct {
+    float rotation;
+    float height;
+    float colors[3][3];
+    float scale;
+} sunState;
+
+typedef struct {
     float x;
     float y;
     float rotation;
@@ -43,5 +50,6 @@ typedef struct {
 void getShadowMat(float matrix[16], float lpos[4]);
 void updatePendulum(pendulumState *pendulum);
 void initCatapult(catapultState *catapult);
+void getSunColor(float ans[4]);
 
 #endif // !UTILS_H

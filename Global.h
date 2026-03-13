@@ -22,6 +22,8 @@ extern pendulumState pendulum;
 
 extern catapultState catapult;
 
+extern sunState sun;
+
 extern thrownAlien thrown;
 
 #endif // !GLOBAL_H

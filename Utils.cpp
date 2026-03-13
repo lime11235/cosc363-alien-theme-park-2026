@@ -130,3 +130,10 @@ void initCatapult(catapultState *catapult) {
     fire(0);
 }
 
+void getSunColor(float ans[4]){
+    int j = (int)sun.scale;
+    float scale = sun.scale - j;
+    for (size_t i = 0; i<3; i++) {
+        ans[i] = sun.colors[j%3][i] + scale * (sun.colors[(j+1)%3][i] - sun.colors[j%3][i]);
+    }
+}

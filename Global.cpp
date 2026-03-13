@@ -3,7 +3,7 @@
 int FPS = 30;
 int frame = 0;
 bool wireframe = false;
-GLuint texIds[4];
+GLuint texIds[5];
 
 position pos = {
     .dir = 180,
@@ -34,6 +34,17 @@ catapultState catapult = {
     .moving = false,
     .grab = false,
     .qoffset = 0
+};
+
+sunState sun = {
+    .rotation = 0,
+    .height = 0,
+    .colors = {
+        {0.9294, 0.6039, 0.6471},
+        {0.4157, 0.6392, 0.6706},
+        {0.7686, 0.5961, 0.8902},
+    },
+    .scale = 0
 };
 
 thrownAlien thrown = {

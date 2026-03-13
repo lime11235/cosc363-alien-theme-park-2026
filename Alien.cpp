@@ -45,7 +45,7 @@ void drawEverything(bool color) {
 }
 
 void display() {
-	float lpos[4] = {0., 50., 0., 1.0};  //light's position
+    float lpos[4] = {0, 6*sin(sun.height) + 40, 0, 1};
     glPolygonMode(GL_FRONT_AND_BACK, wireframe ? GL_LINE : GL_FILL);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); 
 	glMatrixMode(GL_MODELVIEW);
@@ -61,10 +61,8 @@ void display() {
         glEnable(GL_LIGHTING);
     else 
         glDisable(GL_LIGHTING);
-	glLightfv(GL_LIGHT0,GL_POSITION, lpos);
-    // float red[4] = {0, 1, 0, 1};
-    // glLightfv(GL_LIGHT0, GL_DIFFUSE, red);
-    // glLightfv(GL_LIGHT0, GL_SPECULAR, red);
+
+    drawSun(lpos);
 
 	drawFloor();
 
@@ -116,39 +114,9 @@ void initialize(void) {
     loadTexture(1, (char*)"resources/bricks.tga", GL_MODULATE);
     loadTexture(2, (char*)"resources/nightsky.tga", GL_REPLACE);
     loadTexture(3, (char*)"resources/woodplanks.tga", GL_MODULATE);
+    loadTexture(4, (char*)"resources/sun.tga", GL_MODULATE);
 
-    registerStaticAnimation((animation_infinite) {
-        .value = &(alienGlobal.walk),
-        .increment = 2.0,
-        .to = 15.0,
-        .from = -15.0,
-        .type = ALTERNATE
-    });
-
-    registerStaticAnimation((animation_infinite) {
-        .value = &(alienGlobal.pinch),
-        .increment = 0.6,
-        .to = 20.0,
-        .from = -5.0,
-        .type = ALTERNATE
-    });
-
-    registerStaticAnimation((animation_infinite) {
-        .value = &(pendulum.gravity),
-        .increment = 0.05,
-        .to = 10,
-        .from = 0,
-        .type = ALTERNATE
-    });
-
-    registerStaticAnimation((animation_infinite) {
-        .value = &(pendulum.subangle),
-        .increment = 7,
-        .to = 360,
-        .from = 0,
-        .type = RESTART
-    });
-
+    initializeAnimations();
     initCatapult(&catapult);
 }
 

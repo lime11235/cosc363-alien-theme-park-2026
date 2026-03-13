@@ -2,6 +2,7 @@
 #include <set>
 #include <math.h>
 #include "Animation.h"
+#include "Global.h"
 
 using namespace std;
 
@@ -60,6 +61,64 @@ void animate(int value) {
 
 void registerDynamicAnimation(animation animation) {
     dynamic_animations.insert(animation);
+}
+
+void initializeAnimations(void) {
+    registerStaticAnimation((animation_infinite) {
+        .value = &(alienGlobal.walk),
+        .increment = 2.0,
+        .to = 15.0,
+        .from = -15.0,
+        .type = ALTERNATE
+    });
+
+    registerStaticAnimation((animation_infinite) {
+        .value = &(alienGlobal.pinch),
+        .increment = 0.6,
+        .to = 20.0,
+        .from = -5.0,
+        .type = ALTERNATE
+    });
+
+    registerStaticAnimation((animation_infinite) {
+        .value = &(pendulum.gravity),
+        .increment = 0.05,
+        .to = 10,
+        .from = 0,
+        .type = ALTERNATE
+    });
+
+    registerStaticAnimation((animation_infinite) {
+        .value = &(pendulum.subangle),
+        .increment = 7,
+        .to = 360,
+        .from = 0,
+        .type = RESTART
+    });
+
+    registerStaticAnimation((animation_infinite) {
+        .value = &(sun.rotation),
+        .increment = 0.5,
+        .to = 360,
+        .from = 0,
+        .type = RESTART
+    });
+
+    registerStaticAnimation((animation_infinite) {
+        .value = &(sun.height),
+        .increment = 0.01,
+        .to = 2*M_PI,
+        .from = 0,
+        .type = RESTART
+    });
+
+    registerStaticAnimation((animation_infinite) {
+        .value = &(sun.scale),
+        .increment = 0.01,
+        .to = 3,
+        .from = 0,
+        .type = RESTART
+    });
 }
 
 float easeOutElastic(float t) {

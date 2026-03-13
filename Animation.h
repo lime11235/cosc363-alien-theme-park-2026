@@ -38,6 +38,8 @@ void registerDynamicAnimation(animation animation);
 
 void animate(int value);
 
+void initializeAnimations(void);
+
 float easeOutElastic(float t);
 float easeInOutQuart(float t);
 float easeOutBounce(float t);

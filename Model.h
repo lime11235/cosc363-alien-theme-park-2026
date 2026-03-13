@@ -10,5 +10,6 @@ void drawSky(void);
 void drawFloor(void);
 void drawLavaPit(bool color);
 void drawAlienQueue(bool color);
+void drawSun(float lpos[4]);
 
 #endif // !MODEL_H

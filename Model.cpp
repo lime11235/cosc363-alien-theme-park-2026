@@ -461,3 +461,26 @@ void drawAlienQueue(bool color) {
     }
     glPopMatrix();
 }
+
+void drawSun(float lpos[4]) {
+    const float black[4] = {0, 0, 0, 1};
+    glEnable(GL_TEXTURE_2D);
+    GLUquadricObj *q = gluNewQuadric();
+    gluQuadricTexture(q, GL_TRUE);
+    glBindTexture(GL_TEXTURE_2D, texIds[4]);
+    float color[4] = {1, 1, 1, 1};
+    getSunColor(color);
+    glMaterialfv(GL_FRONT, GL_EMISSION, color);
+    glColor3fv(color);
+    glLightfv(GL_LIGHT0, GL_DIFFUSE, color);
+    glLightfv(GL_LIGHT0, GL_SPECULAR, color);
+	glLightfv(GL_LIGHT0,GL_POSITION, lpos);
+    glPushMatrix();
+        glTranslatef(lpos[0], lpos[1], lpos[2]);
+        glRotatef(sun.rotation, 0, 1, 0);
+        glRotatef(90, 1, 0, 0);
+        gluSphere(q, 10, 18, 9);
+    glPopMatrix();
+    glDisable(GL_TEXTURE_2D);
+    glMaterialfv(GL_FRONT, GL_EMISSION, black);
+}
